@@ -36,7 +36,8 @@ class CampaignsTable extends Table
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',
             'joinType' => 'INNER',
-            'className' => 'Newsletter.Templates'
+            'className' => 'Newsletter.Templates',
+            'conditions' => ['Templates.active' => true],
         ]);
         $this->hasMany('Logs', [
             'foreignKey' => 'campaign_id',
