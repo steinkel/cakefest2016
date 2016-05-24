@@ -64,7 +64,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        'salt' => env('SECURITY_SALT', '7621d08db53bcaef059e9ff6341c674eba60ed00f4926fda8786545fe2a73cbe'),
     ],
 
     /**
@@ -117,6 +117,12 @@ return [
             'duration' => '+2 minutes',
             'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
+        'session' => [
+            'className' => 'Redis',
+            'prefix' => 's_',
+            'duration' => '+60 minutes',
+            'url' => env('CACHE_SESSION_URL', null),
+        ]
     ],
 
     /**
@@ -177,13 +183,13 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => 'Mail',
+            'className' => 'SMTP',
             // The following keys are used in SMTP transports
-            'host' => 'localhost',
+            'host' => 'debugmail.io',
             'port' => 25,
             'timeout' => 30,
-            'username' => 'user',
-            'password' => 'secret',
+            'username' => 'YOUR_USERNAME',
+            'password' => 'YOUR_PASSWORD',
             'client' => null,
             'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
@@ -338,6 +344,9 @@ return [
      * To use database sessions, load the SQL file located at config/Schema/sessions.sql
      */
     'Session' => [
-        'defaults' => 'php',
+        'defaults' => 'cache',
+        'handler' => [
+            'config' => 'session'
+        ]
     ],
 ];
