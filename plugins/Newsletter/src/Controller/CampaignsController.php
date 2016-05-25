@@ -112,4 +112,31 @@ class CampaignsController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function queries()
+    {
+        $query = $this->Campaigns->find()
+            ->select(['Campaigns.name', 'Campaigns.status'])
+            ->where(['Campaigns.status !=' => 'new'])
+            ->order(['Campaigns.name' => 'asc'])
+            ->limit(10);
+
+        debug($query->all());
+        debug($query->toArray());
+        debug($query->count());
+        debug($query->first());
+
+        $this->render(false);
+    }
+
+    public function contain()
+    {
+        $query = $this->Campaigns->find()
+            //->contain('MailingLists.Users');
+            ->contain(['MailingLists.Users' => [
+                'conditions' => ['email LIKE' => 'updates%']
+            ]]);
+        debug($query->toArray());
+        $this->render(false);
+    }
 }
