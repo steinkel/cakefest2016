@@ -220,4 +220,4 @@ Type::build('date')
 Type::build('datetime')
     ->useImmutable();
 
-Plugin::load('Newsletter', ['bootstrap' => false, 'routes' => true]);
+Plugin::load('Newsletter', ['bootstrap' => true, 'routes' => true]);

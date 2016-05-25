@@ -1,7 +1,8 @@
 <?php
 namespace Newsletter\Model\Table;
 
-use Cake\ORM\Query;
+use Cake\Event\Event;
+use Cake\Log\Log;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -69,5 +70,13 @@ class MailingListsUsersTable extends Table
         $rules->add($rules->existsIn(['mailing_list_id'], 'MailingLists'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         return $rules;
+    }
+
+    public function afterSave(Event $event, MailingListsUser $entity, $options)
+    {
+        $user = $this->Users->get($entity['user_id']);
+        $mailingList = $this->MailingLists->get($entity['mailing_list_id']);
+        $message = sprintf('(++) %s was subscribed to mailing list "%s"', $user['email'], $mailingList['name']);
+        Log::info($message, 'subscription');
     }
 }

@@ -37,9 +37,8 @@ class UsersTable extends Table
             'className' => 'Newsletter.Logs'
         ]);
         $this->belongsToMany('MailingLists', [
+            'through' => 'Newsletter.MailingListsUsers',
             'foreignKey' => 'user_id',
-            'targetForeignKey' => 'mailing_list_id',
-            'joinTable' => 'mailing_lists_users',
             'className' => 'Newsletter.MailingLists'
         ]);
     }
