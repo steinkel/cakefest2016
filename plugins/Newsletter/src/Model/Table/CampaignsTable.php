@@ -1,6 +1,7 @@
 <?php
 namespace Newsletter\Model\Table;
 
+use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -70,9 +71,19 @@ class CampaignsTable extends Table
             ->requirePresence('name', 'create')
             ->notEmpty('name');
 
-         $validator
-             ->requirePresence('status', 'create')
-             ->inList('status', self::STATUSES, __('Invalid status, please use one of the following options: {0}', Text::toList(self::STATUSES, __('or'))));
+        $validator
+            ->requirePresence('status', 'create')
+            ->inList('status', self::STATUSES, __('Invalid status, please use one of the following options: {0}', Text::toList(self::STATUSES, __('or'))))
+            ->add('status', 'inProgressOnlyWeekdays', [
+                'rule' => function ($value, $context) {
+                    return $value !== 'in-progress';
+                },
+                'on' => function ($context) {
+                    $now = Time::now();
+                    return ($now->isSaturday() || $now->isSunday());
+                },
+                'message' => __('Campaigns can only be set as in-progress in work days')
+            ]);
 
         return $validator;
     }
