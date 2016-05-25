@@ -4,6 +4,7 @@ namespace Newsletter\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use Newsletter\Model\Entity\Campaign;
 
@@ -16,6 +17,8 @@ use Newsletter\Model\Entity\Campaign;
  */
 class CampaignsTable extends Table
 {
+
+    const STATUSES = ['new', 'in-progress', 'completed'];
 
     /**
      * Initialize method
@@ -67,9 +70,9 @@ class CampaignsTable extends Table
             ->requirePresence('name', 'create')
             ->notEmpty('name');
 
-        $validator
-            ->requirePresence('status', 'create')
-            ->notEmpty('status');
+         $validator
+             ->requirePresence('status', 'create')
+             ->inList('status', self::STATUSES, __('Invalid status, please use one of the following options: {0}', Text::toList(self::STATUSES, __('or'))));
 
         return $validator;
     }
