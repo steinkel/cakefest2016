@@ -139,4 +139,18 @@ class CampaignsController extends AppController
         debug($query->toArray());
         $this->render(false);
     }
+
+    public function saveExample()
+    {
+        $campaign = $this->Campaigns->newEntity();
+        $campaign->name = 'New Campaign';
+        $campaign->status = 'new';
+        debug($campaign->errors());
+        debug($this->Campaigns->save($campaign));
+
+        $campaign->template_id = 1;
+        debug($this->Campaigns->save($campaign));
+
+        $this->render(false);
+    }
 }
