@@ -107,4 +107,11 @@ class UsersController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function import()
+    {
+        $saved = $this->Users->import(ROOT . DS . 'users.csv');
+        debug($saved);
+        $this->render(false);
+    }
 }

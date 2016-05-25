@@ -31,6 +31,7 @@ class UsersTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('Newsletter.ImportCSV');
 
         $this->hasMany('Logs', [
             'foreignKey' => 'user_id',
