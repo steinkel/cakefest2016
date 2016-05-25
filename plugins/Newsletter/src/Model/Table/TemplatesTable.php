@@ -30,6 +30,10 @@ class TemplatesTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('Translate', ['fields' => [
+            'subject',
+            'body',
+        ]]);
 
         $this->hasMany('Campaigns', [
             'foreignKey' => 'template_id',
