@@ -71,9 +71,10 @@ class TemplatesController extends AppController
      */
     public function edit($id = null)
     {
-        $template = $this->Templates->get($id, [
-            'contain' => []
-        ]);
+        $template = $this->Templates
+            ->find('translations')
+            ->where(['id' => $id])
+            ->first();
         if ($this->request->is(['patch', 'post', 'put'])) {
             $template = $this->Templates->patchEntity($template, $this->request->data);
             if ($this->Templates->save($template)) {

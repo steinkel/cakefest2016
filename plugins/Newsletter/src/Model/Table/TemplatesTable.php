@@ -1,6 +1,7 @@
 <?php
 namespace Newsletter\Model\Table;
 
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -75,5 +76,19 @@ class TemplatesTable extends Table
             ->allowEmpty('active');
 
         return $validator;
+    }
+
+    public function afterRules(Event $event, Template $entity, $options, $result, $operation)
+    {
+        $translations = $entity->get('_translations');
+        if (!$translations) {
+            return;
+        }
+        foreach ($translations as $locale => $data) {
+            if (!is_array($data)) {
+                continue;
+            }
+            $entity->translation($locale)->set($data, ['guard' => false]);
+        }
     }
 }

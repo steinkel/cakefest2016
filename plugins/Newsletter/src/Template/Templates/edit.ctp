@@ -1,3 +1,6 @@
+<?php
+use Cake\Core\Configure;
+?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
@@ -18,9 +21,16 @@
         <legend><?= __('Edit Template') ?></legend>
         <?php
             echo $this->Form->input('name');
+            echo $this->Form->input('active');
+            echo $this->Html->tag('h3', __('en (default)'));
             echo $this->Form->input('subject');
             echo $this->Form->input('body');
-            echo $this->Form->input('active');
+            $locales = Configure::read('availableLocales');
+            foreach ($locales as $locale) {
+                echo $this->Html->tag('h3', h($locale));
+                echo $this->Form->input("_translations.$locale.subject", ['label' => __('Subject')]);
+                echo $this->Form->input("_translations.$locale.body", ['label' => __('Body')]);
+            }
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
