@@ -35,6 +35,11 @@ class TemplatesTable extends Table
             'foreignKey' => 'template_id',
             'className' => 'Newsletter.Campaigns'
         ]);
+        $this->hasMany('NewCampaigns', [
+            'foreignKey' => 'template_id',
+            'className' => 'Newsletter.Campaigns',
+            'conditions' => ['NewCampaigns.status' => 'new']
+        ]);
     }
 
     /**

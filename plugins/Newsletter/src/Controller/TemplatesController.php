@@ -34,7 +34,7 @@ class TemplatesController extends AppController
     public function view($id = null)
     {
         $template = $this->Templates->get($id, [
-            'contain' => ['Campaigns']
+            'contain' => ['Campaigns', 'NewCampaigns']
         ]);
 
         $this->set('template', $template);

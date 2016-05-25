@@ -42,7 +42,12 @@ class MailingListsTable extends Table
             'foreignKey' => 'mailing_list_id',
             'targetForeignKey' => 'user_id',
             'joinTable' => 'mailing_lists_users',
-            'className' => 'Newsletter.Users'
+            'className' => 'Newsletter.Users',
+            'sort' => [
+                'Users.first_name' => 'asc',
+                'Users.last_name' => 'asc',
+                'Users.email' => 'asc',
+            ]
         ]);
     }
 
