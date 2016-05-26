@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8c8eee0878b0852c6d5651b334b36d7f",
-    "content-hash": "601fb31c8d0d4504a213a0c837654da4",
+    "hash": "1583b3b82b1e9940b46dc5f37975c5d9",
+    "content-hash": "7dff70a7d3ef6e22ec85abac96eb6cd3",
     "packages": [
         {
             "name": "aura/installer-default",
@@ -125,6 +125,44 @@
                 "localization"
             ],
             "time": "2014-08-24 00:00:00"
+        },
+        {
+            "name": "cakedc/enum",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CakeDC/Enum.git",
+                "reference": "b56f49a45a1e286e0732faeea621fd36794d5a3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CakeDC/Enum/zipball/b56f49a45a1e286e0732faeea621fd36794d5a3c",
+                "reference": "b56f49a45a1e286e0732faeea621fd36794d5a3c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "cakephp/cakephp": "~3.0",
+                "cakephp/cakephp-codesniffer": "2.*",
+                "phpunit/phpunit": "4.1.*"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "CakeDC\\Enum\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Enumeration list for CakePHP 3",
+            "homepage": "https://github.com/cakedc/enum",
+            "keywords": [
+                "cakedc",
+                "cakephp",
+                "enum"
+            ],
+            "time": "2016-05-22 14:11:59"
         },
         {
             "name": "cakephp/cakephp",
@@ -1230,6 +1268,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "cakedc/enum": 0,
         "psy/psysh": 0
     },
     "prefer-stable": true,
