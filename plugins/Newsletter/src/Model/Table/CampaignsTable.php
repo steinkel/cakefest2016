@@ -1,10 +1,13 @@
 <?php
 namespace Newsletter\Model\Table;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\I18n\Time;
+use Cake\Mailer\Email;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use Newsletter\Model\Entity\Campaign;
@@ -99,5 +102,41 @@ class CampaignsTable extends Table
     {
         $rules->add($rules->existsIn(['template_id'], 'Templates'));
         return $rules;
+    }
+
+    public function send($id)
+    {
+        if (!$this->exists($id)) {
+            throw new RecordNotFoundException(__d('Newsletter', 'Missing campaign'));
+        }
+        //first approach, using containable
+        $query = $this->find()
+            ->where(['Campaigns.id' => $id])
+            ->contain(['Templates', 'MailingLists.Users']);
+        //check unique #1 :(
+        $users = Hash::combine($query->toArray(), '{n}.mailing_lists.{n}.users.{n}.email', '{n}.mailing_lists.{n}.users.{n}');
+        foreach ($users as $user) {
+            unset($user['created'], $user['modified']);
+            $this->emailMerge($query->first(), $user);
+        }
+    }
+
+    public function emailMerge(Campaign $campaign, $user = [])
+    {
+        $subjectTemplate = $campaign['template']['subject'];
+        $bodyTemplate = $campaign['template']['body'];
+        $options = [
+            'before' => '{{',
+            'after' => '}}'
+        ];
+        $variables = Hash::flatten(compact('user'));
+        $subject = Text::insert($subjectTemplate, $variables, $options);
+        $body = Text::insert($bodyTemplate, $variables, $options);
+        $email = new Email();
+        return $email
+            ->to($user['email'])
+            ->emailFormat('both')
+            ->subject($subject)
+            ->send($body);
     }
 }

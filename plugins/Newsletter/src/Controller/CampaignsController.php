@@ -153,4 +153,17 @@ class CampaignsController extends AppController
 
         $this->render(false);
     }
+
+    public function send($id = null)
+    {
+        //$this->request->allowMethod(['post']);
+        try {
+            $this->Campaigns->send($id);
+            $this->Flash->success(__d('Newsletter', 'Campaign was merged and delivered'));
+        } catch (RecordNotFoundException $ex) {
+            $this->Flash->error($ex->getMessage());
+        }
+
+        $this->render(false);
+    }
 }
