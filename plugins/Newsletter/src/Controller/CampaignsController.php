@@ -2,6 +2,9 @@
 namespace Newsletter\Controller;
 
 use Newsletter\Controller\AppController;
+use Newsletter\Model\Action\CreateCampaign;
+use Newsletter\Model\Action\CreateCampaignWithTemplate;
+use Newsletter\Form\CreateCampaignForm;
 
 /**
  * Campaigns Controller
@@ -51,20 +54,12 @@ class CampaignsController extends AppController
      */
     public function add()
     {
-        $campaign = $this->Campaigns->newEntity();
+        $campaign = new CreateCampaignForm($this->Campaigns);
         if ($this->request->is('post')) {
-            $campaign = $this->Campaigns->patchEntity($campaign, $this->request->data);
-            if ($this->Campaigns->save($campaign)) {
-                $this->Flash->success(__('The campaign has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The campaign could not be saved. Please, try again.'));
-            }
+            $campaign->execute($this->request->data);
         }
         $templates = $this->Campaigns->Templates->find('list', ['limit' => 200]);
-        $mailingLists = $this->Campaigns->MailingLists->find('list', ['limit' => 200]);
-        $this->set(compact('campaign', 'templates', 'mailingLists'));
-        $this->set('_serialize', ['campaign']);
+        $this->set(compact('templates', 'campaign'));
     }
 
     /**

@@ -16,9 +16,7 @@
         <legend><?= __('Add Campaign') ?></legend>
         <?php
             echo $this->Form->input('name');
-            echo $this->Form->input('status');
-            echo $this->Form->input('template_id', ['options' => $templates]);
-            echo $this->Form->input('mailing_lists._ids', ['options' => $mailingLists]);
+            echo $this->Form->input('template_id', ['options' => $templates, 'empty' => true]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

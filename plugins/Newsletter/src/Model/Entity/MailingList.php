@@ -28,5 +28,6 @@ class MailingList extends Entity
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'is_active' => false
     ];
 }

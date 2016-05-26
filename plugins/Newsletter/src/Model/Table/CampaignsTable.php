@@ -8,6 +8,7 @@ use Cake\ORM\Table;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use Newsletter\Model\Entity\Campaign;
+use Newsletter\Model\Entity\Template;
 
 /**
  * Campaigns Model
@@ -97,7 +98,9 @@ class CampaignsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['template_id'], 'Templates'));
+        $rules->add(function ($entity) {
+            return $entity->template instanceof Template;
+        });
         return $rules;
     }
 }

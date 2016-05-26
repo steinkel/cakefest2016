@@ -87,4 +87,45 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
         return $rules;
     }
+
+    public function findWithFullName(Query $query, array $options)
+    {
+        return $query->select([
+            'full_name' => $this->buildFullName($query)
+        ]);
+    }
+
+    /**
+     * Returns all the users after matching their full name to a
+     * provided string.
+     *
+     * ### Options:
+     *
+     * - name: The string to match agains the full name
+     *
+     * @param Query $query
+     * @param array $options An array with a required `name` key
+     * @return Query
+     */
+    public function findByFullName(Query $query, array $options)
+    {
+        $match = $options['name'];
+        return $query->where(function ($exp, $query) use ($match) {
+            return $exp->like($this->buildFullName($query), "%$match%");
+        });
+    }
+
+    public function findOrderByFullName(Query $query, array $options)
+    {
+        return $query->orderDesc($this->buildFullName($query));
+    }
+
+    protected function buildFullName($query)
+    {
+        return $query->func()->concat([
+            'first_name' => 'identifier',
+            '  ',
+            'last_name' => 'identifier'
+        ]);
+    }
 }

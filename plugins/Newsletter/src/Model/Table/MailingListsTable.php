@@ -69,4 +69,19 @@ class MailingListsTable extends Table
 
         return $validator;
     }
+
+    /**
+     * Finds the newletters that are still active in the system
+     *
+     * This finder does not accept any extra options
+     *
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findActive(Query $query, array $options)
+    {
+        return $query->where([$this->aliasField('is_active') => true]);
+    }
+
 }

@@ -18,7 +18,7 @@ class MailingListsController extends AppController
      */
     public function index()
     {
-        $mailingLists = $this->paginate($this->MailingLists);
+        $mailingLists = $this->paginate($this->MailingLists->find('active'));
 
         $this->set(compact('mailingLists'));
         $this->set('_serialize', ['mailingLists']);
