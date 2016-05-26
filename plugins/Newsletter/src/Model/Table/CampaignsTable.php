@@ -4,6 +4,7 @@ namespace Newsletter\Model\Table;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
+use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -22,8 +23,9 @@ use Newsletter\Model\Entity\Campaign;
  */
 class CampaignsTable extends Table
 {
-
+    use MailerAwareTrait;
     const STATUSES = ['new', 'in-progress', 'completed'];
+
 
     /**
      * Initialize method
@@ -141,19 +143,6 @@ class CampaignsTable extends Table
         }
         $subjectTemplate = $localizedTemplate['subject'];
         $bodyTemplate = $localizedTemplate['body'];
-        $options = [
-            'before' => '{{',
-            'after' => '}}'
-        ];
-        $variables = Hash::flatten(compact('user'));
-        $subject = Text::insert($subjectTemplate, $variables, $options);
-        $email = new Email();
-        return $email
-            ->to($user['email'])
-            ->template('Newsletter.emailMerge')
-            ->viewVars(compact('variables', 'bodyTemplate', 'options'))
-            ->emailFormat('both')
-            ->subject($subject)
-            ->send();
+        $this->getMailer('Newsletter.Campaign')->send('merge', compact('user', 'subjectTemplate', 'bodyTemplate'));
     }
 }
