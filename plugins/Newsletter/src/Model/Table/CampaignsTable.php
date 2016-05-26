@@ -107,7 +107,9 @@ class CampaignsTable extends Table
     public function send($id)
     {
         $campaign = $this->get($id, [
-            'contain' => ['Templates']
+            'contain' => ['Templates' => function (Query $query) {
+                return $query->find('translations');
+            }]
         ]);
         //first approach, using containable
         $query = $this->MailingLists->Users->find('campaignUniqueUsers', ['campaign_id' => $id]);
@@ -120,8 +122,12 @@ class CampaignsTable extends Table
 
     public function emailMerge(Campaign $campaign, $user = [])
     {
-        $subjectTemplate = $campaign['template']['subject'];
-        $bodyTemplate = $campaign['template']['body'];
+        $localizedTemplate = $campaign->template->translation($user['locale']);
+        if ($localizedTemplate->isNew()) {
+            $localizedTemplate = $campaign->template;
+        }
+        $subjectTemplate = $localizedTemplate['subject'];
+        $bodyTemplate = $localizedTemplate['body'];
         $options = [
             'before' => '{{',
             'after' => '}}'
