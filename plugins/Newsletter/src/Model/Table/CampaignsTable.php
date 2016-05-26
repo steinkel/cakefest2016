@@ -7,6 +7,7 @@ use Cake\Mailer\Email;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -101,6 +102,18 @@ class CampaignsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['template_id'], 'Templates'));
+        $rules->add(function ($campaign) {
+            $mailingListIds = Hash::extract($campaign, 'mailing_lists.{n}.id');
+            if (empty($mailingListIds)) {
+                return false;
+            }
+            $query = TableRegistry::get('MailingListsUsers')->find()
+                ->where(['mailing_list_id IN' => $mailingListIds]);
+            return $query->count() > 0;
+        }, 'notEmptyUsers', [
+            'errorField' => 'mailing_lists',
+            'message' => __d('Newsletter', 'Selected mailing lists do not have associated users, please select at least one mailing list with users.')
+        ]);
         return $rules;
     }
 
@@ -134,12 +147,13 @@ class CampaignsTable extends Table
         ];
         $variables = Hash::flatten(compact('user'));
         $subject = Text::insert($subjectTemplate, $variables, $options);
-        $body = Text::insert($bodyTemplate, $variables, $options);
         $email = new Email();
         return $email
             ->to($user['email'])
+            ->template('Newsletter.emailMerge')
+            ->viewVars(compact('variables', 'bodyTemplate', 'options'))
             ->emailFormat('both')
             ->subject($subject)
-            ->send($body);
+            ->send();
     }
 }
