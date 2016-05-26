@@ -222,3 +222,4 @@ Type::build('datetime')
 
 Plugin::load('Newsletter', ['bootstrap' => true, 'routes' => true]);
 Configure::write('availableLocales', ['es', 'nl']);
+Plugin::load('CakeDC/Enum');

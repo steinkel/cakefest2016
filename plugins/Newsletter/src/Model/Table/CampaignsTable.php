@@ -24,8 +24,9 @@ use Newsletter\Model\Entity\Campaign;
 class CampaignsTable extends Table
 {
     use MailerAwareTrait;
-    const STATUSES = ['new', 'in-progress', 'completed'];
-
+    const STATUS_NEW = 'new';
+    const STATUS_IN_PROGRESS = 'in-progress';
+    const STATUS_COMPLETED = 'completed';
 
     /**
      * Initialize method
@@ -42,6 +43,13 @@ class CampaignsTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('CakeDC/Enum.Enum', [
+            'lists' => [
+                'status' => [
+                    'strategy' => 'const',
+                    'prefix' => 'STATUS'
+                ]
+            ]]);
 
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',
@@ -79,16 +87,16 @@ class CampaignsTable extends Table
 
         $validator
             ->requirePresence('status', 'create')
-            ->inList('status', self::STATUSES, __('Invalid status, please use one of the following options: {0}', Text::toList(self::STATUSES, __('or'))))
+            ->inList('status', $this->enum('status'), __d('Newsletter', 'Invalid status, please use one of the following options: {0}', Text::toList($this->enum('status'), __d('Newsletter', 'or'))))
             ->add('status', 'inProgressOnlyWeekdays', [
                 'rule' => function ($value, $context) {
-                    return $value !== 'in-progress';
+                    return $value !== self::STATUS_IN_PROGRESS;
                 },
                 'on' => function ($context) {
                     $now = Time::now();
                     return ($now->isSaturday() || $now->isSunday());
                 },
-                'message' => __('Campaigns can only be set as in-progress in work days')
+                'message' => __d('Newsletter', 'Campaigns can only be set as {0} in work days', __d('Newsletter', self::STATUS_IN_PROGRESS))
             ]);
 
         return $validator;
