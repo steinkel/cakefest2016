@@ -106,18 +106,15 @@ class CampaignsTable extends Table
 
     public function send($id)
     {
-        if (!$this->exists($id)) {
-            throw new RecordNotFoundException(__d('Newsletter', 'Missing campaign'));
-        }
+        $campaign = $this->get($id, [
+            'contain' => ['Templates']
+        ]);
         //first approach, using containable
-        $query = $this->find()
-            ->where(['Campaigns.id' => $id])
-            ->contain(['Templates', 'MailingLists.Users']);
+        $query = $this->MailingLists->Users->find('campaignUniqueUsers', ['campaign_id' => $id]);
         //check unique #1 :(
-        $users = Hash::combine($query->toArray(), '{n}.mailing_lists.{n}.users.{n}.email', '{n}.mailing_lists.{n}.users.{n}');
+        $users = $query->hydrate(false)->toArray();
         foreach ($users as $user) {
-            unset($user['created'], $user['modified']);
-            $this->emailMerge($query->first(), $user);
+            $this->emailMerge($campaign, $user);
         }
     }
 

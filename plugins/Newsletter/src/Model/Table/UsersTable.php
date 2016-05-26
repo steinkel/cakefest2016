@@ -87,4 +87,21 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
         return $rules;
     }
+
+    public function findCampaignUniqueUsers(Query $q, $options)
+    {
+        $campaign_id = $options['campaign_id'];
+        return $q
+            ->select([
+                'Users.email',
+                'Users.first_name',
+                'Users.last_name',
+                'Users.locale'
+            ])
+            ->group('Users.email')
+            ->matching('MailingLists.Campaigns', function (Query $q) use ($campaign_id) {
+            return $q->where(['Campaigns.id' => $campaign_id]);
+        });
+    }
+
 }
