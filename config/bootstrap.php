@@ -82,7 +82,7 @@ try {
 // Load an environment local configuration file.
 // You can use a file like app_local.php to provide local overrides to your
 // shared configuration.
-//Configure::load('app_local', 'default');
+Configure::load('app_local', 'default');
 
 // When debug = false the metadata cache should last
 // for a very very long time, as we don't want
@@ -220,5 +220,5 @@ Type::build('date')
 Type::build('datetime')
     ->useImmutable();
 
-Plugin::load('Newsletter', ['bootstrap' => true, 'routes' => true]);
+Plugin::load('Newsletter', ['bootstrap' => true]);
 Configure::write('availableLocales', ['es', 'nl']);

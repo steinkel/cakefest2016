@@ -29,7 +29,7 @@ class EmailShell extends Shell
      *
      * @return bool|int Success or error code.
      */
-    public function main() 
+    public function main()
     {
         $this->out($this->OptionParser->help());
     }
@@ -37,5 +37,21 @@ class EmailShell extends Shell
     public function test()
     {
         debug(Email::deliver('me@example.com', 'test subject', 'test body', 'default'));
+    }
+
+    public function stuff()
+    {
+        $this->helper('Progress')->output(['callback' => function ($progress) {
+            // Do work here.
+            $progress->increment(20);
+            $progress->draw();
+            sleep(1);
+
+            $progress->increment(20);
+            $progress->draw();
+            sleep(1);
+            $progress->increment(80);
+            $progress->draw();
+        }]);
     }
 }

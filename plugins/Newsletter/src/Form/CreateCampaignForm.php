@@ -51,6 +51,7 @@ class CreateCampaignForm extends Form
     protected function _execute(array $data)
     {
        $action = new CreateCampaign($this->Campaigns);
+       $template = null;
 
        if (empty($data['template_id'])) {
         $action = new CreateCampaignWithTemplate(
@@ -62,7 +63,7 @@ class CreateCampaignForm extends Form
        }
 
        $campaign = $this->Campaigns->newEntity();
-       $campaign = $action($campaign, $template, $data);
+       $campaign = $action($campaign, $data, $template);
        return !$campaign->errors();
     }
 }

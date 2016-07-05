@@ -37,4 +37,9 @@ class User extends Entity
     {
         return $this->first_name . ' ' . $this->last_name . ' <' . $this->email . '>';
     }
+
+    protected function _setPassword($plainText)
+    {
+        return password_hash($plainText, PASSWORD_DEFAULT);
+    }
 }

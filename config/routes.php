@@ -42,7 +42,7 @@ use Cake\Routing\Router;
  */
 Router::defaultRouteClass('DashedRoute');
 
-Router::scope('/', function (RouteBuilder $routes) {
+$basicRoutes = function (RouteBuilder $routes) {
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file
@@ -72,10 +72,15 @@ Router::scope('/', function (RouteBuilder $routes) {
      * routes you want in your application.
      */
     $routes->fallbacks('DashedRoute');
-});
+};
+$newsletterRoutes = include Plugin::path('Newsletter') . '/config/routes.php';
 
-/**
- * Load all plugin routes.  See the Plugin documentation on
- * how to customize the loading of plugin routes.
- */
-Plugin::routes();
+$realRoutes = function ($routes) use ($basicRoutes, $newsletterRoutes) {
+    $routes->scope('/', $basicRoutes);
+    $routes->plugin('Newsletter', $newsletterRoutes);
+    return $routes;
+};
+
+Router::scope('/es', ['language' => 'es'], $realRoutes);
+Router::scope('/fr', ['language' => 'fr'], $realRoutes);
+Router::scope('/', $realRoutes);

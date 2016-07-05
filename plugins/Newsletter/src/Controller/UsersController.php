@@ -17,6 +17,44 @@ class UsersController extends AppController
         ]
     ];
 
+    public function initialize()
+    {
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Form' => [
+                    'fields' => ['username' => 'email', 'password' => 'password'],
+                    'passwordHasher' => [
+                        'className' => 'Fallback',
+                        'hashers' => [
+                            'Default',
+                            // Let's migrate away from insecure passwords
+                            // Yes, cake rules
+                            'PlainText'
+                        ]
+                    ]
+                ],
+            ],
+            'loginAction' => ['_name' => 'login'],
+        ]);
+        parent::initialize();
+    }
+
+    public function login()
+    {
+        if ($this->request->is('post')) {
+            $user = $this->Auth->identify();
+            if ($user) {
+                $this->Auth->setUser($user);
+                if ($this->Auth->authenticationProvider()->needsPasswordRehash()) {
+                    $user = $this->Users->get($this->Auth->user('id'));
+                    $user->password = $this->request->data('password');
+                    $this->Users->save($user);
+                }
+                return $this->redirect(['action' => 'index']);
+            }
+        }
+    }
+
     /**
      * Index method
      *

@@ -15,7 +15,7 @@ class CreateCampaign
         $this->campaignsTable = $campaigns;
     }
 
-    public function __invoke(Campaign $entity, Template $template, array $properties)
+    public function __invoke(Campaign $entity, array $properties, Template $template)
     {
         $entity = $this->campaignsTable->patchEntity($entity, $properties);
         $entity->template = $template;
